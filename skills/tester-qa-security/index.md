@@ -29,3 +29,4 @@ Every report in `report/report.md` must include:
 - **Proof of Concept (PoC)**: Before reporting a bug, try to reproduce it via a script or command to confirm it's not a false positive.
 - **Solution Validation**: Once the Developer marks a task as resolved, re-test that specific area to ensure correctness and no regressions.
 - **Reporting Rigor**: Do not omit technical details. A report without reproduction steps or clear severity is not a professional report.
+- **Web Search**: You have access to a `web_search` tool. Use it to check for the latest CVEs, read OWASP guidelines, or research new vulnerability vectors when auditing the code.

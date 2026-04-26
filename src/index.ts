@@ -3,6 +3,7 @@ import * as path from 'path';
 import { state, getNextPersona, AgentPersona } from './state';
 import { getPromptForPersona } from './prompts';
 import { renderUI } from './ui';
+import { registerWebSearchTool } from './tools/webSearch';
 
 /**
  * Main entry point for the Pi extension.
@@ -11,6 +12,9 @@ export default function (pi: any) {
   
   const taskFilePath = path.join(process.cwd(), 'plan', 'task.md');
   let uiContext: any = null;
+
+  // Register the custom Web Search tool
+  registerWebSearchTool(pi);
 
   const stateFilePath = path.join(process.cwd(), '.pi_orchestrator_state.json');
 
