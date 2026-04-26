@@ -14,7 +14,7 @@ const color = (theme: any, type: string, text: string) => {
 };
 
 // Generates the square agent viewer (Premium Look)
-export const renderAgentBox = (persona: AgentPersona, theme: any): string[] => {
+const renderAgentBox = (persona: AgentPersona, theme: any): string[] => {
   const name = persona.toString().toUpperCase();
   const padding = ' '.repeat(Math.max(0, 16 - name.length));
   
@@ -29,35 +29,46 @@ export const renderAgentBox = (persona: AgentPersona, theme: any): string[] => {
   ];
 };
 
-// Generates the expanded task list sidebar
-export const renderTaskListSidebar = (theme: any): string[] => {
+export const renderUI = (persona: AgentPersona, isExpanded: boolean, theme: any): string[] => {
   const tasks = parseTasks();
-  const lines: string[] = [];
+  const agentLines = renderAgentBox(persona, theme);
   
-  // Header with collapse hint
-  lines.push(color(theme, "accent", " ╭────────────────╮ "));
-  lines.push(color(theme, "accent", " │ 📋 TASKS  [‹]  │ "));
-  lines.push(color(theme, "accent", " ╰────────────────╯ "));
-  lines.push("");
-  
+  // If no tasks exist, only show the agent box
   if (tasks.length === 0) {
-    lines.push(color(theme, "muted", "   (No tasks yet)   "));
-  } else {
+    return agentLines;
+  }
+  
+  // Prepare tasks sidebar
+  let taskLines: string[] = [];
+  if (isExpanded) {
+    taskLines.push(color(theme, "accent", " ╭────────────────╮ "));
+    taskLines.push(color(theme, "accent", " │ 📋 TASKS  [‹]  │ "));
+    taskLines.push(color(theme, "accent", " ╰────────────────╯ "));
+    taskLines.push("");
+    
     tasks.forEach(task => {
       const checkbox = task.isDone ? "󰄬 [x]" : "󰄱 [ ]";
       const taskText = ` ${checkbox} ${task.description}`;
-      lines.push(task.isDone ? color(theme, "success", taskText) : color(theme, "text", taskText));
+      taskLines.push(task.isDone ? color(theme, "success", taskText) : color(theme, "text", taskText));
     });
+  } else {
+    taskLines = [
+      "",
+      color(theme, "accent", " 󰱒 TASK [›] "),
+      color(theme, "muted",  " (Alt+T)    ")
+    ];
   }
   
-  return lines;
-};
-
-// Generates the collapsed task list (just the button)
-export const renderTaskListCollapsed = (theme: any): string[] => {
-  return [
-    "",
-    color(theme, "accent", " 󰱒 TASK [›] "),
-    color(theme, "muted",  " (Alt+T)    ")
-  ];
+  // Combine side-by-side
+  const combined: string[] = [];
+  const maxLines = Math.max(agentLines.length, taskLines.length);
+  const AGENT_WIDTH = 20; // Exact visible width of the agent box
+  
+  for (let i = 0; i < maxLines; i++) {
+    const left = agentLines[i] || ' '.repeat(AGENT_WIDTH);
+    const right = taskLines[i] || '';
+    combined.push(`${left}    ${right}`);
+  }
+  
+  return combined;
 };

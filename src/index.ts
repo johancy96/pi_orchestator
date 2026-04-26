@@ -2,7 +2,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { state, getNextPersona, AgentPersona } from './state';
 import { getPromptForPersona } from './prompts';
-import { renderAgentBox, renderTaskListSidebar, renderTaskListCollapsed } from './ui';
+import { renderUI } from './ui';
 
 /**
  * Main entry point for the Pi extension.
@@ -41,18 +41,10 @@ export default function (pi: any) {
     uiContext = ctx;
     const theme = ctx.ui.theme;
     
-    // 1. Render Agent Box (Top)
-    const agentBoxLines = renderAgentBox(state.activePersona, theme);
-    ctx.ui.setWidget("top", agentBoxLines);
-    
-    // 2. Render Task List (Right)
-    if (state.isTaskListExpanded) {
-      const taskListLines = renderTaskListSidebar(theme);
-      ctx.ui.setWidget("right", taskListLines);
-    } else {
-      const collapsedLines = renderTaskListCollapsed(theme);
-      ctx.ui.setWidget("right", collapsedLines);
-    }
+    // Render side-by-side UI
+    const combinedLines = renderUI(state.activePersona, state.isTaskListExpanded, theme);
+    ctx.ui.setWidget("top", combinedLines);
+    ctx.ui.setWidget("right", undefined); // Ensure we clear the old "right" widget if it existed
   };
 
   // Watch for task.md changes to update the UI dynamically
