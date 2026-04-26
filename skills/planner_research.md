@@ -1,4 +1,5 @@
 ---
+name: planner_research
 description: Advanced planning and research methodologies for software architecture
 ---
 # Research Methodologies and Professional Planning
