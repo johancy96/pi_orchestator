@@ -1,0 +1,22 @@
+{
+  "name": "pi_orchestator",
+  "version": "1.0.0",
+  "description": "Pi Agent Orchestrator with Planner, Developer, and Tester personas",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "keywords": [
+    "pi",
+    "agent",
+    "orchestrator",
+    "extension"
+  ],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.0.0"
+  }
+}
