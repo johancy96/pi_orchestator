@@ -21,15 +21,36 @@
 - Node.js and npm.
 
 ### Setup
-Run the following command in your terminal to install and integrate automatically with Pi:
+
+#### Method 1: One-Liner (Remote)
+Run this command for **Bash/Zsh**:
+```bash
+curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/pi_orchestator/main/install.sh | bash
+```
+
+Run this command for **Fish**:
+```fish
+curl -sSL https://raw.githubusercontent.com/YOUR_USERNAME/pi_orchestator/main/install.sh | bash
+```
+*(The script uses bash internally for compatibility)*
+
+#### Method 2: From Repository (Local)
+If you have already cloned the repository, simply run:
 ```bash
 ./install.sh
 ```
 
-This script will:
-1. Build the extension.
-2. Link the package globally.
-3. Automatically update Pi's `settings.json` to load the extension.
+#### Method 3: Manual Clone
+```bash
+git clone https://github.com/YOUR_USERNAME/pi_orchestator.git
+cd pi_orchestator
+./install.sh
+```
+
+### What the installer does:
+1. Builds the extension.
+2. Links the package globally (`npm link`).
+3. Automatically updates Pi's `settings.json` to enable the extension.
 
 ### Shortcuts
 - **`Tab`**: Switch between Agent Personas (Planner → Developer → Tester).
