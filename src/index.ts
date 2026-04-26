@@ -67,7 +67,7 @@ export default function (pi: any) {
   };
 
   // Listen for agent start to inject the persona's prompt
-  pi.on("before_agent_start", (ctx: any) => {
+  pi.on("before_agent_start", (event: any, ctx: any) => {
     let prompt = getPromptForPersona(state.activePersona);
     
     // Add doc context instruction only once EVER for this project
@@ -80,41 +80,49 @@ export default function (pi: any) {
       }
     }
 
-    ctx.agent.setSystemPrompt(prompt);
     updateUI(ctx);
+    
+    // Return the system prompt to override it for this turn
+    return { systemPrompt: prompt };
   });
 
   // Intercept keys
-  pi.on("key", (key: any, ctx: any) => {
-    // Tab to switch personas
-    if (key.isSpecial("tab")) {
-      state.activePersona = getNextPersona(state.activePersona);
-      updateUI(ctx);
-      return true;
-    }
-    
-    // Ctrl+T or similar to toggle task list (Since mouse click is not supported in TUI API)
-    if (key.isSpecial("t") && key.ctrl) {
+  pi.on("key", (event: any, ctx: any) => {
+    // Note: 'event' is the key event (if Pi passes it that way).
+    // Let's assume the signature is (key, ctx) since that's what was written before,
+    // wait, I don't know the exact "key" event signature. Let's look for shortcuts.
+  });
+
+  // Since 'key' event might not exist, Pi has registerShortcut. Let's use registerShortcut!
+  pi.registerShortcut("ctrl+t", {
+    description: "Toggle Orchestrator Task List",
+    handler: (ctx: any) => {
       state.isTaskListExpanded = !state.isTaskListExpanded;
       updateUI(ctx);
-      return true;
     }
-    
-    return false;
+  });
+
+  pi.registerShortcut("ctrl+o", {
+    description: "Switch Orchestrator Persona",
+    handler: (ctx: any) => {
+      state.activePersona = getNextPersona(state.activePersona);
+      updateUI(ctx);
+    }
   });
 
   // Register the /orchestrator_init command
-  pi.on("command", async (command: any, ctx: any) => {
-    if (command.name === "orchestrator_init") {
+  pi.registerCommand("orchestrator_init", {
+    description: "Initialize the Orchestrator documentation structure",
+    handler: async (args: string, ctx: any) => {
       const files = fs.readdirSync(process.cwd());
       const filteredFiles = files.filter(f => !['.git', 'node_modules', '.pi', 'package-lock.json'].includes(f));
       
       if (filteredFiles.length === 0) {
-        ctx.ui.printMessage("This project is empty");
+        if (ctx.hasUI) ctx.ui.notify("This project is empty", "warning");
         return;
       }
 
-      ctx.ui.printMessage("Initializing orchestrator documentation...");
+      if (ctx.hasUI) ctx.ui.notify("Initializing orchestrator documentation...", "info");
       
       // Create basic doc structure
       const docPath = path.join(process.cwd(), 'doc');
@@ -125,24 +133,12 @@ export default function (pi: any) {
         fs.mkdirSync(path.join(docPath, 'modules'));
       }
 
-      // Inject a high-priority system prompt to force the agent to document the project
-      ctx.agent.setSystemPrompt(`
-        URGENT ACTION: The user has initialized the Orchestrator. 
-        You must perform a complete analysis of the current project and generate detailed documentation in the "doc/" folder.
-        - Create "doc/architecture/overview.md" for a high-level summary.
-        - Document modules in "doc/modules/".
-        - Document APIs or entry points in "doc/api/".
-        Use the specialized skills in the "skills/" folder to ensure high-quality documentation.
-      `);
-      
-      // Force agent to start thinking/acting
-      ctx.agent.refreshContext();
-      return true;
+      if (ctx.hasUI) ctx.ui.notify("Created doc/ folder structure. Tell the agent to document the project.", "success");
     }
   });
 
   // Initial UI render
-  pi.on("session_start", (ctx: any) => {
+  pi.on("session_start", (event: any, ctx: any) => {
     loadPersistentState();
     watchTasks();
     updateUI(ctx);

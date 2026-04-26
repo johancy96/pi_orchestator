@@ -46,7 +46,7 @@ export const renderTaskListSidebar = (theme: any): string[] => {
     tasks.forEach(task => {
       const checkbox = task.isDone ? "󰄬 [x]" : "󰄱 [ ]";
       const taskText = ` ${checkbox} ${task.description}`;
-      lines.push(task.isDone ? color(theme, "success", taskText) : color(theme, "primary", taskText));
+      lines.push(task.isDone ? color(theme, "success", taskText) : color(theme, "text", taskText));
     });
   }
   
