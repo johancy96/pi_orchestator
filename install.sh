@@ -16,7 +16,7 @@ echo -e "${BLUE}🤖 Starting Pi Orchestrator Installation...${NC}"
 # Check if we are in the repo, if not, clone it (for curl | bash support)
 if [ ! -f "package.json" ] || [ "$(basename $(pwd))" != "pi_orchestator" ]; then
     echo -e "${BLUE}📥 Downloading project from repository...${NC}"
-    REPO_URL="https://github.com/YOUR_USERNAME/pi_orchestator.git"
+    REPO_URL="https://github.com/johancy96/pi_orchestator.git"
     git clone "$REPO_URL" pi_orchestator
     cd pi_orchestator
 fi
