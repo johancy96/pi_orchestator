@@ -26,4 +26,4 @@ As a Senior Planner, you must follow these principles to structure application d
 - **Feasibility Validation**: If you propose a new library or tool, verify its compatibility with the current environment.
 - **Task Consistency**: Ensure each task in `plan/task.md` is atomic, measurable, and has a clear Definition of Done.
 - **Status Update**: Immediately reflect any changes in the project scope by updating the plan file.
-- **Web Search**: You have access to a `web_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.
+- **Web Search**: You have access to a `playwright_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.

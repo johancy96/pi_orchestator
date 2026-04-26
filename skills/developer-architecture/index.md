@@ -28,4 +28,4 @@ As a Senior Fullstack Developer, your code must be the benchmark for quality by 
 - **Build Verification**: After each major code edit, run the relevant build command or linter.
 - **Dependency Management**: If you need to install something, first check if an alternative already exists in the project.
 - **Task Tracking**: Mark tasks in `plan/task.md` as `[x]` only after verifying that the implementation works correctly in the execution environment.
-- **Web Search**: You have access to a `web_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.
+- **Web Search**: You have access to a `playwright_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.

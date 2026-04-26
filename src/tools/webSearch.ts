@@ -3,7 +3,7 @@ import { Type } from '@sinclair/typebox';
 
 export const registerWebSearchTool = (pi: any) => {
   pi.registerTool({
-    name: "web_search",
+    name: "playwright_search",
     label: "Web Search",
     description: "Search the web or extract text from a specific URL using the system's Chrome browser. Use this to read documentation, search for errors, or find recent information.",
     parameters: Type.Object({
