@@ -134,7 +134,14 @@ export default function (pi: any) {
         fs.mkdirSync(path.join(docPath, 'modules'));
       }
 
-      if (ctx.hasUI) ctx.ui.notify("Created doc/ folder structure. Tell the agent to document the project.", "success");
+      if (ctx.hasUI) ctx.ui.notify("Created doc/ folder structure. Triggering agent analysis...", "success");
+
+      // Automatically trigger the agent to start documenting
+      pi.sendUserMessage(
+        "URGENT: I have just initialized the Orchestrator. Please perform a complete analysis of the current project and generate detailed documentation in the 'doc/' folder. " +
+        "Create 'doc/architecture/overview.md' for a high-level summary, document modules in 'doc/modules/', and document APIs or entry points in 'doc/api/'. " +
+        "Use your specialized skills to ensure high-quality documentation."
+      );
     }
   });
 
