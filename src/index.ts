@@ -7,7 +7,7 @@ import { renderAgentBox, renderTaskListSidebar, renderTaskListCollapsed } from '
 /**
  * Main entry point for the Pi extension.
  */
-module.exports = function (pi: any) {
+export default function (pi: any) {
   
   const taskFilePath = path.join(process.cwd(), 'plan', 'task.md');
   let uiContext: any = null;
