@@ -60,13 +60,13 @@ export default function (pi: any) {
 
   // Listen for agent start to inject the persona's prompt
   pi.on("before_agent_start", (event: any, ctx: any) => {
-    let prompt = getPromptForPersona(state.activePersona);
+    let personaPrompt = getPromptForPersona(state.activePersona);
     
     // Add doc context instruction only once EVER for this project
     if (!state.docContextAnalyzed) {
       const docPath = path.join(process.cwd(), 'doc');
       if (fs.existsSync(docPath)) {
-        prompt += `\n\n[CONTEXT INITIALIZATION]: A "doc/" folder exists. Review its content to extract project architecture and logic. You only need to do this once for this project; acknowledge when done so you don't repeat this check.`;
+        personaPrompt += `\n\n[CONTEXT INITIALIZATION]: A "doc/" folder exists. Review its content to extract project architecture and logic. You only need to do this once for this project; acknowledge when done so you don't repeat this check.`;
         state.docContextAnalyzed = true; 
         savePersistentState(); // Persist the flag
       }
@@ -74,8 +74,17 @@ export default function (pi: any) {
 
     updateUI(ctx);
     
-    // Return the system prompt to override it for this turn
-    return { systemPrompt: prompt };
+    // Append the persona to the base system prompt and force a hard context switch
+    const fullSystemPrompt = event.systemPrompt + 
+      "\n\n========================================================================\n" +
+      "🔴 CRITICAL DIRECTIVE: PERSONA SWITCH 🔴\n" +
+      "For this turn and all subsequent turns until stated otherwise, you MUST completely adopt the following persona:\n\n" +
+      personaPrompt + "\n\n" +
+      "IGNORE any previous roles or personas you assumed earlier in this chat history.\n" +
+      "If the user asks who you are, you are STRICTLY the " + state.activePersona + ".\n" +
+      "========================================================================";
+
+    return { systemPrompt: fullSystemPrompt };
   });
 
   // Intercept keys
