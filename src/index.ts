@@ -37,7 +37,7 @@ export default function (pi: any) {
 
   // Update the UI
   const updateUI = (ctx: any) => {
-    if (!ctx) return;
+    if (!ctx || !ctx.ui) return;
     uiContext = ctx;
     const theme = ctx.ui.theme;
     
