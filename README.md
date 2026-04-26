@@ -25,12 +25,12 @@
 #### Method 1: One-Liner (Remote)
 Run this command for **Bash/Zsh**:
 ```bash
-curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/master/install.sh | bash
 ```
 
 Run this command for **Fish**:
 ```fish
-curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/main/install.sh | bash
+curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/master/install.sh | bash
 ```
 *(The script uses bash internally for compatibility)*
 
