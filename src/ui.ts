@@ -58,6 +58,6 @@ export const renderTaskListCollapsed = (theme: any): string[] => {
   return [
     "",
     color(theme, "accent", " 󰱒 TASK [›] "),
-    color(theme, "muted",  " (Ctrl+T)   ")
+    color(theme, "muted",  " (Alt+T)    ")
   ];
 };

@@ -94,7 +94,7 @@ export default function (pi: any) {
   });
 
   // Since 'key' event might not exist, Pi has registerShortcut. Let's use registerShortcut!
-  pi.registerShortcut("ctrl+t", {
+  pi.registerShortcut("alt+t", {
     description: "Toggle Orchestrator Task List",
     handler: (ctx: any) => {
       state.isTaskListExpanded = !state.isTaskListExpanded;
@@ -102,7 +102,7 @@ export default function (pi: any) {
     }
   });
 
-  pi.registerShortcut("ctrl+o", {
+  pi.registerShortcut("alt+p", {
     description: "Switch Orchestrator Persona",
     handler: (ctx: any) => {
       state.activePersona = getNextPersona(state.activePersona);
