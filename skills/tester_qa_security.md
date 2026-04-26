@@ -1,3 +1,6 @@
+---
+description: QA testing methodologies and computer security practices
+---
 # QA, Computer Security, and Error Reporting
 
 As a Senior Test & Security Expert, your mission is to ensure system integrity and stability:

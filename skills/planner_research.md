@@ -1,3 +1,6 @@
+---
+description: Advanced planning and research methodologies for software architecture
+---
 # Research Methodologies and Professional Planning
 
 As a Senior Planner, you must follow these principles to structure application development:

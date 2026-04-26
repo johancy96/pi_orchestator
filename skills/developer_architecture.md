@@ -1,3 +1,6 @@
+---
+description: Software architecture, Clean Code, and SOLID principles for developers
+---
 # Software Architecture and Development Best Practices
 
 As a Senior Fullstack Developer, your code must be the benchmark for quality by following these standards:
