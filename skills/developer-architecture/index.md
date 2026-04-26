@@ -1,5 +1,5 @@
 ---
-name: developer_architecture
+name: developer-architecture
 description: Software architecture, Clean Code, and SOLID principles for developers
 ---
 # Software Architecture and Development Best Practices

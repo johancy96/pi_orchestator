@@ -1,5 +1,5 @@
 ---
-name: tester_qa_security
+name: tester-qa-security
 description: QA testing methodologies and computer security practices
 ---
 # QA, Computer Security, and Error Reporting
