@@ -17,9 +17,13 @@ echo -e "${BLUE}🤖 Starting Pi Orchestrator Installation...${NC}"
 if [ ! -f "package.json" ] || [ "$(basename $(pwd))" != "pi_orchestator" ]; then
     echo -e "${BLUE}📥 Downloading project from repository...${NC}"
     REPO_URL="https://github.com/johancy96/pi_orchestator.git"
-    rm -rf pi_orchestator
+    TEMP_DIR=$(mktemp -d)
+    cd "$TEMP_DIR"
     git clone "$REPO_URL" pi_orchestator
     cd pi_orchestator
+    IS_TEMP_CLONE=true
+else
+    IS_TEMP_CLONE=false
 fi
 
 # 1. Check for Node.js
@@ -41,9 +45,15 @@ echo -e "${BLUE}📦 Setting up project...${NC}"
 npm install
 npm run build
 
-# 4. Link package globally
-echo -e "${BLUE}🔗 Linking package for Pi...${NC}"
-npm link
+# 4. Install package globally directly
+echo -e "${BLUE}🔗 Installing package globally...${NC}"
+npm install -g .
+
+# Clean up temp directory if we cloned it
+if [ "$IS_TEMP_CLONE" = true ]; then
+    cd "$HOME"
+    rm -rf "$TEMP_DIR"
+fi
 
 # 5. Update Pi settings.json automatically
 SETTINGS_FILE="$HOME/.pi/agent/settings.json"
