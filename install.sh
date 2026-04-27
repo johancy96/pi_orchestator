@@ -59,12 +59,18 @@ fi
 SETTINGS_FILE="$HOME/.pi/agent/settings.json"
 if [ -f "$SETTINGS_FILE" ]; then
     echo -e "${BLUE}⚙️  Configuring Pi settings.json...${NC}"
-    if grep -q "npm:pi_orchestator" "$SETTINGS_FILE"; then
+    
+    GLOBAL_PATH="$(npm root -g)/pi_orchestator"
+    
+    # Remove old npm:pi_orchestator if it exists
+    sed -i 's/"npm:pi_orchestator",\?//g' "$SETTINGS_FILE"
+    # Remove any empty lines left behind
+    sed -i '/^[[:space:]]*$/d' "$SETTINGS_FILE"
+    
+    if grep -q "\"$GLOBAL_PATH\"" "$SETTINGS_FILE"; then
         echo -e "${GREEN}✅ Already configured in Pi.${NC}"
     else
-        # Add the package to the packages array using sed
-        # This assumes the packages array exists and is not empty
-        sed -i 's/"packages": \[/"packages": [\n    "npm:pi_orchestator",/' "$SETTINGS_FILE"
+        sed -i "s|\"packages\": \[|\"packages\": [\n    \"$GLOBAL_PATH\",|" "$SETTINGS_FILE"
         echo -e "${GREEN}✅ Pi settings updated.${NC}"
     fi
 else
