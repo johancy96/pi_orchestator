@@ -22,39 +22,30 @@
 
 ### Setup
 
-#### Method 1: One-Liner (Remote)
-Run this command for **Bash/Zsh**:
+Install the extension globally via npm:
+
 ```bash
-curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/master/install.sh | bash
+npm install -g pi_orchestator
 ```
 
-Run this command for **Fish**:
-```fish
-curl -sSL https://raw.githubusercontent.com/johancy96/pi_orchestator/master/install.sh | bash
-```
-*(The script uses bash internally for compatibility)*
+### Configure Pi
+To enable the extension, you must add it to Pi's `settings.json` file.
+1. Open `~/.pi/agent/settings.json`
+2. Add `"npm:pi_orchestator"` to the `"packages"` array. It should look like this:
 
-#### Method 2: From Repository (Local)
-If you have already cloned the repository, simply run:
-```bash
-./install.sh
-```
-
-#### Method 3: Manual Clone
-```bash
-git clone https://github.com/johancy96/pi_orchestator.git
-cd pi_orchestator
-./install.sh
+```json
+{
+  "packages": [
+    "npm:pi_orchestator"
+  ]
+}
 ```
 
-### What the installer does:
-1. Builds the extension.
-2. Links the package globally (`npm link`).
-3. Automatically updates Pi's `settings.json` to enable the extension.
+3. Restart your Pi Agent. Your new agents (Planner, Developer, Tester) will now be available!
 
 ### Shortcuts
-- **`Tab`**: Switch between Agent Personas (Planner → Developer → Tester).
-- **`Ctrl+T`**: Toggle the Task List sidebar visibility.
+- **`Alt+P`**: Switch between Agent Personas (Planner → Developer → Tester).
+- **`Alt+T`**: Toggle the Task List sidebar visibility.
 
 ### Commands
 - **`/orchestrator_init`**: Analyzes the current project and generates a comprehensive documentation structure in the `doc/` folder.
