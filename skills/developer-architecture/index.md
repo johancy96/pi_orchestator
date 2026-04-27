@@ -32,5 +32,6 @@ As a Senior Fullstack Developer, your code must be the benchmark for quality by 
 - **Safe Development Cycle**: Make small changes and validate them immediately. Do not accumulate untested changes.
 - **Build Verification**: After each major code edit, run the relevant build command or linter.
 - **Dependency Management**: If you need to install something, first check if an alternative already exists in the project.
-- **Task Tracking**: Mark tasks in `plan/task.md` as `[x]` only after verifying that the implementation works correctly in the execution environment.
+- **Task Tracking**: Mark tasks in `plan/task.md` as `[x]` only after verifying that the implementation works correctly. 
+- **FINAL PROJECT VERIFICATION**: Before you check off the *very last* task in `plan/task.md`, you are strictly required to perform a comprehensive QA pass and security audit (OWASP) on the entire project to guarantee it is 100% bug-free and secure. You must not hand over control to the Planner until this global test is successfully completed.
 - **Web Search**: You have access to a `playwright_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.
