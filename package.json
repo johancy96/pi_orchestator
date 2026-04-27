@@ -2,24 +2,36 @@
   "name": "pi_orchestator",
   "version": "1.0.0",
   "description": "Pi Agent Orchestrator with Planner, Developer, and Tester personas",
-  "main": "dist/index.js",
-  "scripts": {
-    "build": "tsc",
-    "watch": "tsc -w"
-  },
   "keywords": [
     "pi",
     "agent",
     "orchestrator",
     "extension"
   ],
-  "author": "",
-  "license": "ISC",
+  "homepage": "https://github.com/johancy96/pi_orchestator#readme",
+  "bugs": {
+    "url": "https://github.com/johancy96/pi_orchestator/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/johancy96/pi_orchestator.git"
+  },
+  "license": "MIT",
+  "author": "johancy",
+  "type": "module",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc -w"
+  },
+  "dependencies": {
+    "@sinclair/typebox": "^0.34.49",
+    "playwright-core": "^1.59.1"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.0.0"
   },
-  "type": "module",
   "pi": {
     "extensions": [
       "./dist/index.js"
@@ -27,9 +39,5 @@
     "skills": [
       "./skills"
     ]
-  },
-  "dependencies": {
-    "@sinclair/typebox": "^0.34.49",
-    "playwright-core": "^1.59.1"
   }
 }
