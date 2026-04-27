@@ -71,9 +71,15 @@ export default function (pi: any) {
     // New Session Detection (Tokens at Zero)
     const isNewSession = !ctx.usage || ctx.usage.totalTokens === 0;
     
-    if (isNewSession && activePersona === AgentPersona.PLANNER) {
-      personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. You MUST ask the user if they want you to perform a full project survey to enter into context.
-      - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills and generate/update the 'doc/' folder.
+    // Check if project has files (excluding hidden/meta files)
+    const projectFiles = fs.readdirSync(process.cwd()).filter(f => 
+      !['.git', 'node_modules', '.pi', 'package-lock.json', '.pi_orchestrator_state.json'].includes(f)
+    );
+    const isProjectNotEmpty = projectFiles.length > 0;
+    
+    if (isNewSession && isProjectNotEmpty && activePersona === AgentPersona.PLANNER) {
+      personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. Since the project is not empty, you MUST ask the user if they want you to perform a full project survey to enter into context.
+      - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills. If a 'doc/' folder already exists, update its content with the current project state. Once the survey is finished, you will use this context only for the start of this session and then proceed with the user's instructions.
       - If they say NO: Ignore the survey and proceed directly with their requests.
       Do not perform any analysis until the user gives explicit consent in this session.`;
     }
