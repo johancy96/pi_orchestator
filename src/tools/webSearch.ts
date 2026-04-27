@@ -22,6 +22,10 @@ export const registerWebSearchTool = (pi: any) => {
         const page = await browser.newPage();
         
         let targetUrl = params.url;
+        if (targetUrl && !targetUrl.startsWith('http://') && !targetUrl.startsWith('https://')) {
+          return { content: [{ type: "text", text: "Error: Only http:// and https:// protocols are allowed for security reasons." }], isError: true };
+        }
+
         if (!targetUrl && params.query) {
           onUpdate?.({ text: `Searching DuckDuckGo for: ${params.query}` });
           targetUrl = `https://html.duckduckgo.com/html/?q=${encodeURIComponent(params.query)}`;
@@ -29,7 +33,7 @@ export const registerWebSearchTool = (pi: any) => {
           onUpdate?.({ text: `Navigating to ${targetUrl}...` });
         }
 
-        await page.goto(targetUrl, { waitUntil: 'domcontentloaded', timeout: 20000 });
+        await page.goto(targetUrl!, { waitUntil: 'domcontentloaded', timeout: 20000 });
         
         onUpdate?.({ text: "Extracting readable content..." });
         // Basic extraction of text content, removing boilerplate

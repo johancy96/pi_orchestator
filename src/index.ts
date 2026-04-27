@@ -4,6 +4,7 @@ import { state, AgentPersona } from './state';
 import { getPromptForPersona } from './prompts';
 import { renderUI } from './ui';
 import { registerWebSearchTool } from './tools/webSearch';
+import { parseTasks } from './tasks';
 
 /**
  * Main entry point for the Pi extension.
@@ -16,94 +17,78 @@ export default function (pi: any) {
   // Register the custom Web Search tool
   registerWebSearchTool(pi);
 
-  const stateFilePath = path.join(process.cwd(), '.pi_orchestrator_state.json');
-
-  // Load persistent state
-  const loadPersistentState = () => {
-    // Persistent state logic removed (dynamic session-based analysis now used)
-  };
-
-  // Save persistent state
-  const savePersistentState = () => {
-    // Persistent state logic removed
-  };
-
   // Update the UI
   const updateUI = (ctx: any) => {
     if (!ctx || !ctx.ui) return;
     uiContext = ctx;
     const theme = ctx.ui.theme;
     
-    // Render side-by-side UI
+    // Render Task List UI
     const combinedLines = renderUI(state.isTaskListExpanded, theme);
     ctx.ui.setWidget("top", combinedLines);
-    ctx.ui.setWidget("right", undefined); // Ensure we clear the old "right" widget if it existed
+    ctx.ui.setWidget("right", undefined); 
   };
 
-  // Watch for task.md changes to update the UI dynamically
+  // Watch for task.md changes with debounce
   let watchTimeout: NodeJS.Timeout | null = null;
   const watchTasks = () => {
-    if (fs.existsSync(path.dirname(taskFilePath))) {
-      fs.watch(path.dirname(taskFilePath), (event, filename) => {
+    const taskDir = path.dirname(taskFilePath);
+    if (fs.existsSync(taskDir)) {
+      fs.watch(taskDir, (event, filename) => {
         if (filename === 'task.md') {
           if (watchTimeout) clearTimeout(watchTimeout);
           watchTimeout = setTimeout(() => {
             updateUI(uiContext);
-          }, 150); // 150ms debounce
+          }, 150);
         }
       });
     }
   };
 
-  // Listen for agent start to inject the persona's prompt
+  // Listen for agent start to inject dynamic personas
   pi.on("before_agent_start", (event: any, ctx: any) => {
-    
-    // Dynamic Orchestrator Logic (The Golden Rule)
-    const { parseTasks } = require('./tasks');
+    // 1. Dynamic Orchestrator Logic
     const currentTasks = parseTasks();
     const hasUncompletedTasks = currentTasks.some((t: any) => !t.isDone);
-    
-    // If there are pending tasks, force Developer persona. Otherwise, Planner.
     const activePersona = hasUncompletedTasks ? AgentPersona.DEVELOPER : AgentPersona.PLANNER;
     
     let personaPrompt = getPromptForPersona(activePersona);
     
-    // New Session Detection (Tokens at Zero)
+    // 2. New Session Detection & Project Survey Logic
     const isNewSession = !ctx.usage || ctx.usage.totalTokens === 0;
     
-    // Check if project has files (excluding hidden/meta files)
-    const projectFiles = fs.readdirSync(process.cwd()).filter(f => 
-      !['.git', 'node_modules', '.pi', 'package-lock.json', '.pi_orchestrator_state.json'].includes(f)
-    );
-    const isProjectNotEmpty = projectFiles.length > 0;
-    
-    if (isNewSession && isProjectNotEmpty && activePersona === AgentPersona.PLANNER) {
-      personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. Since the project is not empty, you MUST ask the user if they want you to perform a full project survey to enter into context.
-      - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills. If a 'doc/' folder already exists, update its content with the current project state. Once the survey is finished, you will use this context only for the start of this session and then proceed with the user's instructions.
-      - If they say NO: Ignore the survey and proceed directly with their requests.
-      Do not perform any analysis until the user gives explicit consent in this session.`;
+    if (isNewSession && activePersona === AgentPersona.PLANNER) {
+      // Efficiently check for project content
+      const files = fs.readdirSync(process.cwd());
+      const hasContent = files.some(f => !['.git', 'node_modules', '.pi', 'package-lock.json'].includes(f));
+
+      if (hasContent) {
+        personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. Since the project is not empty, you MUST ask the user if they want you to perform a full project survey to enter into context.
+        - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills. Update the 'doc/' folder as needed.
+        - If they say NO: Ignore the survey and proceed directly.
+        Do not perform analysis until the user gives explicit consent in this session.`;
+      }
     }
 
+    // 3. UI Synchronization
     updateUI(ctx);
     
-    // Append the persona to the base system prompt and force a hard context switch
-    const fullSystemPrompt = event.systemPrompt + 
-      "\n\n========================================================================\n" +
-      "🔴 CRITICAL DIRECTIVE: ORCHESTRATOR ACTIVE 🔴\n" +
-      "You are the dynamic Pi Orchestrator. Based on the current project state, you MUST completely adopt the following persona for this turn:\n\n" +
-      personaPrompt + "\n\n" +
-      "IGNORE any previous roles or personas you assumed earlier in this chat history.\n" +
-      "If the user asks who you are, you are STRICTLY the " + activePersona + ".\n" +
-      "========================================================================";
+    // 4. System Prompt Injection (Force hard context switch)
+    const fullSystemPrompt = `${event.systemPrompt}
+
+========================================================================
+🔴 CRITICAL DIRECTIVE: ORCHESTRATOR ACTIVE 🔴
+You are the dynamic Pi Orchestrator. Adopting persona for this turn:
+
+${personaPrompt}
+
+IGNORE any previous roles. You are STRICTLY the ${activePersona}.
+========================================================================`;
 
     return { systemPrompt: fullSystemPrompt };
   });
 
-  // Intercept keys
-  pi.on("key", (event: any, ctx: any) => {
-  });
-
-  // Since 'key' event might not exist, Pi has registerShortcut. Let's use registerShortcut!
+  // Shortcuts
   pi.registerShortcut("alt+t", {
     description: "Toggle Orchestrator Task List",
     handler: (ctx: any) => {
@@ -112,9 +97,8 @@ export default function (pi: any) {
     }
   });
 
-  // Initial UI render
+  // Lifecycle Initialization
   pi.on("session_start", (event: any, ctx: any) => {
-    loadPersistentState();
     watchTasks();
     updateUI(ctx);
   });
