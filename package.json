@@ -1,6 +1,6 @@
 {
   "name": "pi_orchestator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Pi Agent Orchestrator with Planner, Developer, and Tester personas",
   "keywords": [
     "pi",
@@ -20,6 +20,10 @@
   "author": "johancy",
   "type": "module",
   "main": "dist/index.js",
+  "files": [
+    "dist",
+    "skills"
+  ],
   "scripts": {
     "build": "tsc",
     "watch": "tsc -w"
