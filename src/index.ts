@@ -20,23 +20,12 @@ export default function (pi: any) {
 
   // Load persistent state
   const loadPersistentState = () => {
-    if (fs.existsSync(stateFilePath)) {
-      try {
-        const saved = JSON.parse(fs.readFileSync(stateFilePath, 'utf-8'));
-        state.docContextAnalyzed = !!saved.docContextAnalyzed;
-      } catch (e) {
-        console.error('Error loading persistent state:', e);
-      }
-    }
+    // Persistent state logic removed (dynamic session-based analysis now used)
   };
 
   // Save persistent state
   const savePersistentState = () => {
-    try {
-      fs.writeFileSync(stateFilePath, JSON.stringify({ docContextAnalyzed: state.docContextAnalyzed }));
-    } catch (e) {
-      console.error('Error saving persistent state:', e);
-    }
+    // Persistent state logic removed
   };
 
   // Update the UI
@@ -79,14 +68,14 @@ export default function (pi: any) {
     
     let personaPrompt = getPromptForPersona(activePersona);
     
-    // Add doc context instruction only once EVER for this project
-    if (!state.docContextAnalyzed) {
-      const docPath = path.join(process.cwd(), 'doc');
-      if (fs.existsSync(docPath)) {
-        personaPrompt += `\n\n[CONTEXT INITIALIZATION]: A "doc/" folder exists. Review its content to extract project architecture and logic. You only need to do this once for this project; acknowledge when done so you don't repeat this check.`;
-        state.docContextAnalyzed = true; 
-        savePersistentState(); // Persist the flag
-      }
+    // New Session Detection (Tokens at Zero)
+    const isNewSession = !ctx.usage || ctx.usage.totalTokens === 0;
+    
+    if (isNewSession && activePersona === AgentPersona.PLANNER) {
+      personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. You MUST ask the user if they want you to perform a full project survey to enter into context.
+      - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills and generate/update the 'doc/' folder.
+      - If they say NO: Ignore the survey and proceed directly with their requests.
+      Do not perform any analysis until the user gives explicit consent in this session.`;
     }
 
     updateUI(ctx);
@@ -114,40 +103,6 @@ export default function (pi: any) {
     handler: (ctx: any) => {
       state.isTaskListExpanded = !state.isTaskListExpanded;
       updateUI(ctx);
-    }
-  });
-
-  // Register the /orchestrator_init command
-  pi.registerCommand("orchestrator_init", {
-    description: "Initialize the Orchestrator documentation structure",
-    handler: async (args: string, ctx: any) => {
-      const files = fs.readdirSync(process.cwd());
-      const filteredFiles = files.filter(f => !['.git', 'node_modules', '.pi', 'package-lock.json'].includes(f));
-      
-      if (filteredFiles.length === 0) {
-        if (ctx.hasUI) ctx.ui.notify("This project is empty", "warning");
-        return;
-      }
-
-      if (ctx.hasUI) ctx.ui.notify("Initializing orchestrator documentation...", "info");
-      
-      // Create basic doc structure
-      const docPath = path.join(process.cwd(), 'doc');
-      if (!fs.existsSync(docPath)) {
-        fs.mkdirSync(docPath);
-        fs.mkdirSync(path.join(docPath, 'architecture'));
-        fs.mkdirSync(path.join(docPath, 'api'));
-        fs.mkdirSync(path.join(docPath, 'modules'));
-      }
-
-      if (ctx.hasUI) ctx.ui.notify("Created doc/ folder structure. Triggering agent analysis...", "success");
-
-      // Automatically trigger the agent to start documenting
-      pi.sendUserMessage(
-        "URGENT: I have just initialized the Orchestrator. Please perform a complete analysis of the current project and generate detailed documentation in the 'doc/' folder. " +
-        "Create 'doc/architecture/overview.md' for a high-level summary, document modules in 'doc/modules/', and document APIs or entry points in 'doc/api/'. " +
-        "Use your specialized skills to ensure high-quality documentation."
-      );
     }
   });
 

@@ -14,13 +14,11 @@ export interface OrchestratorState {
   hasPlan: boolean;
   hasReport: boolean;
   isTaskListExpanded: boolean;
-  docContextAnalyzed: boolean;
 }
 
 export const state: OrchestratorState = {
   tasks: [],
   hasPlan: false,
   hasReport: false,
-  isTaskListExpanded: true,
-  docContextAnalyzed: false
+  isTaskListExpanded: true
 };
