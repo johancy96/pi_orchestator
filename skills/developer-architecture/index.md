@@ -23,7 +23,12 @@ As a Senior Fullstack Developer, your code must be the benchmark for quality by 
 - **Framework Structures**: Respect framework conventions (NestJS, Next.js, etc.) while keeping business logic independent.
 - **No-Framework Structures**: Implement patterns like manual Dependency Injection and clear layer architecture.
 
-## 4. Technical Action Protocol
+## 4. QA and Security Verification
+- **Testing**: Before marking any task as complete, verify that the code functions correctly. Write and run tests if applicable to the project structure.
+- **Security Scans**: Actively look for and mitigate OWASP Top 10 vulnerabilities (SQL Injection, XSS, exposed secrets).
+- **Principle of Least Privilege**: Ensure new components only have necessary permissions.
+
+## 5. Technical Action Protocol
 - **Safe Development Cycle**: Make small changes and validate them immediately. Do not accumulate untested changes.
 - **Build Verification**: After each major code edit, run the relevant build command or linter.
 - **Dependency Management**: If you need to install something, first check if an alternative already exists in the project.

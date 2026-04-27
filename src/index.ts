@@ -1,6 +1,6 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { state, getNextPersona, AgentPersona } from './state';
+import { state, AgentPersona } from './state';
 import { getPromptForPersona } from './prompts';
 import { renderUI } from './ui';
 import { registerWebSearchTool } from './tools/webSearch';
@@ -46,17 +46,21 @@ export default function (pi: any) {
     const theme = ctx.ui.theme;
     
     // Render side-by-side UI
-    const combinedLines = renderUI(state.activePersona, state.isTaskListExpanded, theme);
+    const combinedLines = renderUI(state.isTaskListExpanded, theme);
     ctx.ui.setWidget("top", combinedLines);
     ctx.ui.setWidget("right", undefined); // Ensure we clear the old "right" widget if it existed
   };
 
   // Watch for task.md changes to update the UI dynamically
+  let watchTimeout: NodeJS.Timeout | null = null;
   const watchTasks = () => {
     if (fs.existsSync(path.dirname(taskFilePath))) {
       fs.watch(path.dirname(taskFilePath), (event, filename) => {
         if (filename === 'task.md') {
-          updateUI(uiContext);
+          if (watchTimeout) clearTimeout(watchTimeout);
+          watchTimeout = setTimeout(() => {
+            updateUI(uiContext);
+          }, 150); // 150ms debounce
         }
       });
     }
@@ -64,7 +68,16 @@ export default function (pi: any) {
 
   // Listen for agent start to inject the persona's prompt
   pi.on("before_agent_start", (event: any, ctx: any) => {
-    let personaPrompt = getPromptForPersona(state.activePersona);
+    
+    // Dynamic Orchestrator Logic (The Golden Rule)
+    const { parseTasks } = require('./tasks');
+    const currentTasks = parseTasks();
+    const hasUncompletedTasks = currentTasks.some((t: any) => !t.isDone);
+    
+    // If there are pending tasks, force Developer persona. Otherwise, Planner.
+    const activePersona = hasUncompletedTasks ? AgentPersona.DEVELOPER : AgentPersona.PLANNER;
+    
+    let personaPrompt = getPromptForPersona(activePersona);
     
     // Add doc context instruction only once EVER for this project
     if (!state.docContextAnalyzed) {
@@ -81,11 +94,11 @@ export default function (pi: any) {
     // Append the persona to the base system prompt and force a hard context switch
     const fullSystemPrompt = event.systemPrompt + 
       "\n\n========================================================================\n" +
-      "🔴 CRITICAL DIRECTIVE: PERSONA SWITCH 🔴\n" +
-      "For this turn and all subsequent turns until stated otherwise, you MUST completely adopt the following persona:\n\n" +
+      "🔴 CRITICAL DIRECTIVE: ORCHESTRATOR ACTIVE 🔴\n" +
+      "You are the dynamic Pi Orchestrator. Based on the current project state, you MUST completely adopt the following persona for this turn:\n\n" +
       personaPrompt + "\n\n" +
       "IGNORE any previous roles or personas you assumed earlier in this chat history.\n" +
-      "If the user asks who you are, you are STRICTLY the " + state.activePersona + ".\n" +
+      "If the user asks who you are, you are STRICTLY the " + activePersona + ".\n" +
       "========================================================================";
 
     return { systemPrompt: fullSystemPrompt };
@@ -93,9 +106,6 @@ export default function (pi: any) {
 
   // Intercept keys
   pi.on("key", (event: any, ctx: any) => {
-    // Note: 'event' is the key event (if Pi passes it that way).
-    // Let's assume the signature is (key, ctx) since that's what was written before,
-    // wait, I don't know the exact "key" event signature. Let's look for shortcuts.
   });
 
   // Since 'key' event might not exist, Pi has registerShortcut. Let's use registerShortcut!
@@ -103,14 +113,6 @@ export default function (pi: any) {
     description: "Toggle Orchestrator Task List",
     handler: (ctx: any) => {
       state.isTaskListExpanded = !state.isTaskListExpanded;
-      updateUI(ctx);
-    }
-  });
-
-  pi.registerShortcut("alt+p", {
-    description: "Switch Orchestrator Persona",
-    handler: (ctx: any) => {
-      state.activePersona = getNextPersona(state.activePersona);
       updateUI(ctx);
     }
   });
