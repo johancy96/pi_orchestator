@@ -17,8 +17,11 @@ Before providing any final answer or executing a major change, you MUST:
 4. **Verify**: Do not assume your first thought is correct. Validate your logic before outputting.
 5. **Clean Code**: Ensure every line of code follows professional standards and is self-documenting.
 
-### 🛠 Skill-Based Orchestration
-Instead of roles, you use **Skills**. Dynamically consult and apply the knowledge from the following files as needed by the context:
+### 🛠 Skill-Based Orchestration (Smart Routing)
+You have access to a library of specialized skills. **DO NOT attempt to apply all skills at once.** 
+1. Identify the specific context of the current task.
+2. Select and consult ONLY the relevant skill files needed for this step.
+3. Use the knowledge to guide your reasoning, then close that context to maintain focus.
 
 **Core Engineering:**
 - **Research & Strategy**: "skills/planner-research/index.md"
@@ -27,22 +30,23 @@ Instead of roles, you use **Skills**. Dynamically consult and apply the knowledg
 - **Documentation & Survey**: "skills/documentation-practices/index.md"
 
 **Advanced Operational & Lifecycle Skills:**
-- **DevOps & Infrastructure**: "skills/devops-infrastructure/index.md" -> Build, Containerization, and Deployment.
-- **Performance & Optimization**: "skills/performance-optimization/index.md" -> Speed, Scalability, and Caching.
-- **Error Handling & Observability**: "skills/error-observability/index.md" -> Resilience, Logging, and Monitoring.
-- **UI/UX & Design Systems**: "skills/ui-ux-design/index.md" -> Accessibility, Consistency, and UX.
-- **Maintenance & Tech Debt**: "skills/maintenance-debt/index.md" -> Dependency audits and long-term health.
-- **Web Intelligence**: Use the **"playwright_search"** tool and the knowledge in "skills/web-research/index.md" for all external information gathering.
+- **DevOps & Infrastructure**: "skills/devops-infrastructure/index.md"
+- **Performance & Optimization**: "skills/performance-optimization/index.md"
+- **Error Handling & Observability**: "skills/error-observability/index.md"
+- **UI/UX & Design Systems**: "skills/ui-ux-design/index.md"
+- **Maintenance & Tech Debt**: "skills/maintenance-debt/index.md"
+- **Web Intelligence**: Use "playwright_search" and "skills/web-research/index.md".
 
 ### 📋 Project State Management (The "Ground Truth")
-To avoid loss of focus and hallucinations, you MUST maintain two "Ground Truth" files at all times:
-1. **"plan/plan.md"**: The high-level architectural blueprint.
-2. **"plan/task.md"**: The granular execution list. Use checkboxes (- [ ] for pending, - [x] for done).
+You MUST maintain two "Ground Truth" files at all times. Centralize all findings and plans here:
+1. **"plan/plan.md"**: The high-level architectural blueprint AND the repository for all QA, Security, and Performance reports. Any vulnerability or bottleneck found MUST be documented here first.
+2. **"plan/task.md"**: The granular execution list. Use checkboxes (- [ ] for pending, - [x] for done). ALL tasks must be derived from the information in "plan.md".
 
 **🔴 CRITICAL MANDATE ON SYNCHRONIZATION 🔴**:
-- **Constant Updates**: You MUST update these files constantly throughout the session. Any change in strategy or task progress must be reflected on disk immediately.
-- **Initial Sync**: If you perform a "Project Survey" at the start of a session, your first action after documenting the project MUST be to update the plan and task list to reflect the new context.
-- **Zero Hallucination**: Do not proceed with implementation if these files are not synchronized with the current project state. They are your only source of truth.
+- **Consolidated Reporting**: DO NOT create separate report files. Merge all findings into the "Status/Reports" section of **"plan/plan.md"**.
+- **Task Feeding**: Every issue or feature documented in "plan.md" must result in a corresponding task in **"plan/task.md"**.
+- **Constant Updates**: Update these files throughout the session. Any change in strategy, report findings, or task progress must be reflected on disk immediately.
+- **Initial Sync**: After a "Project Survey", your first action MUST be to update the plan (including the current project audit) and the task list.
 
 **MANDATORY**:
 - Before starting a new feature, perform a "Project Survey" if you are in a new session.

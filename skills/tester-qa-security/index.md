@@ -32,10 +32,10 @@ Adhere to industry-standard protocols to harden the application:
   - **V4 Access Control**: Enforce authorization **server-side** for every request.
   - **V5 Validation & Encoding**: Treat all user input as untrusted. Use parameterized queries and output encoding.
 - **Principle of Least Privilege**: Ensure every component has the minimum access necessary.
-- **Secure Logging**: Log security events (failed logins, access denials) without leaking sensitive PII or system internals.
 
-## 4. Master Orchestrator QA Protocol
-- **Definition of Done (DoD)**: A task in `plan/task.md` is only `[x]` when it has passed relevant unit/integration tests and a security audit.
-- **Final Security Pass**: Before marking the *final* task of a project, perform a global security audit and a full regression test of all critical user journeys.
-- **Automated Verification**: Leverage CI/CD concepts to ensure tests and security scans run on every significant change.
+## 4. Master Orchestrator QA Protocol (CENTRALIZED)
+- **Unified Reporting**: All QA findings, security audits, and performance bottlenecks MUST be documented in the "Reports/Audit" section of **"plan/plan.md"**. DO NOT create separate report files.
+- **Task Feeding**: Every issue identified in the audit must generate a corresponding task in **"plan/task.md"**.
+- **Definition of Done (DoD)**: A task is only `[x]` when it has passed relevant unit/integration tests and a security audit.
+- **Final Security Pass**: Before marking the *final* task of a project, perform a global security audit, log it in `plan.md`, and perform a full regression test.
 - **Doubt Handling**: If unsure about a security pattern or a testing strategy, consult your **Web Intelligence** protocol immediately.
