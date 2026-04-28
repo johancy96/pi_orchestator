@@ -1,6 +1,6 @@
 {
   "name": "pi_orchestator",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "Master Orchestrator for Pi Agent with skill-based autonomous development",
   "keywords": [
     "pi",
