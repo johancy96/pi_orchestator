@@ -1,8 +1,3 @@
-export enum AgentPersona {
-  PLANNER = 'Planner',
-  DEVELOPER = 'Developer'
-}
-
 export interface Task {
   id: string;
   description: string;

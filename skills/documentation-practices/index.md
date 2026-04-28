@@ -1,30 +1,39 @@
 ---
 name: documentation-practices
-description: Best practices and standards for documenting software projects
+description: Professional Software Documentation Standards (Docs-as-Code, Diátaxis, ADRs)
 ---
-# Software Project Documentation Best Practices
+# Master Orchestrator: Software Documentation Standards
 
-As an agent tasked with documenting a software project, you must follow these professional standards to ensure the documentation is clear, maintainable, and highly useful for developers and stakeholders.
+This skill defines the methodologies for creating high-quality, maintainable, and useful documentation. As a Master Orchestrator, you must ensure that the "Ground Truth" of the project is supported by documentation that captures not only the "What" but the "Why."
 
-## 1. Documentation Structure
-- **High-Level Architecture (`doc/architecture/overview.md`)**: Explain the "Why" and "How" of the system. Describe the core components, their responsibilities, and how they interact.
-- **Module Documentation (`doc/modules/`)**: Document individual components, services, or logical units. Include their purpose, internal state, and dependencies.
-- **API and Entry Points (`doc/api/`)**: Document public interfaces, endpoints, or main functions. Include expected inputs, outputs, and side effects.
+## 1. Documentation Structure & Architecture
+You MUST organize documentation within the `doc/` directory following this architecture:
 
-## 2. Writing Principles
-- **Clarity and Conciseness**: Use direct, unambiguous language. Avoid unnecessary jargon unless it is industry-standard.
-- **Context Over Code**: Do not just repeat what the code does. Explain *why* it does it, design decisions, edge cases handled, and potential pitfalls.
-- **Progressive Disclosure**: Start with a high-level summary before diving into deep technical details. Allow readers to stop reading once they have the level of detail they need.
+- **High-Level Architecture (`doc/architecture/overview.md`)**: The entry point for the system's "Why" and "How." Contains the **Explanation** (Understanding-Oriented) part of Diátaxis.
+- **Module Documentation (`doc/modules/`)**: Detailed documentation of individual services, logical units, or packages. Follows the **How-To** and **Reference** categories.
+- **API and Entry Points (`doc/api/`)**: Technical descriptions of public interfaces and endpoints. Uses **OpenAPI/Swagger** standards for **Reference** information.
+- **Decision Records (`doc/adr/`)**: Stores **Architecture Decision Records (ADRs)** to preserve the history and justification of technical choices.
 
-## 3. Visual Aids and Formatting
-- **Mermaid Diagrams**: Use Mermaid.js diagrams to visualize complex workflows, architecture diagrams, or state machines. This is highly recommended for `overview.md`.
-- **Code Snippets**: Provide minimal, reproducible code snippets to demonstrate how an API or module should be used.
-- **Markdown Features**: Liberally use tables for structured data, bold text for emphasis, and proper heading hierarchies (H1, H2, H3).
+## 2. Docs-as-Code & Diátaxis Framework
+Apply these writing philosophies across the structure above:
+- **Docs-as-Code**: Version control everything. Update documentation in the same commit as the code changes.
+- **Diátaxis Categories**:
+  - **Tutorials**: Lessons for newcomers.
+  - **How-To Guides**: Practical recipes for tasks.
+  - **Reference**: Technical specs (APIs, parameters).
+  - **Explanation**: High-level concepts and architecture.
 
-## 4. Maintenance and Accuracy
-- **Truthfulness**: Ensure documentation strictly matches the current state of the codebase. Never hallucinate features that don't exist yet.
-- **Actionable Steps**: When documenting setup or usage, provide exact commands that the user can copy-paste.
+## 3. Architecture Decision Records (ADRs)
+When making a critical choice (e.g., changing a database, selecting a framework):
+- **Structure**: Context, Decision, Status (Proposed/Accepted/Deprecated), and Consequences.
+- **Immutability**: New decisions supercede old ones by creating a new ADR, never by modifying an accepted one.
 
-## 5. Execution Protocol
-- **Analyze First**: Before writing, thoroughly read the source files relevant to the module you are documenting.
-- **Iterative Updates**: If a system spans multiple files, document it iteratively, ensuring consistency across all documentation files.
+## 4. Visual Aids and Formatting
+- **Mermaid Diagrams**: Use Mermaid.js diagrams (architecture, sequences, states) to keep visuals version-controlled.
+- **Context Over Code**: Explain *why* a design decision was made rather than just repeating what the code does.
+- **Markdown Features**: Use tables for data, bold text for emphasis, and proper H1-H3 hierarchies.
+
+## 5. Master Orchestrator Documentation Protocol
+- **Initial Project Survey**: On a new session in a non-empty project, perform a **Full Context Survey**. Generate or update the `doc/` directory according to the architecture above.
+- **Context Synchronization**: Immediately after the survey, update `plan/plan.md` and `plan/task.md` to align with the documented state.
+- **Continuous Updates**: If a task implementation deviates from the documentation, update the relevant `doc/` file and/or create an ADR immediately.

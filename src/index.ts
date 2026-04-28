@@ -1,7 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { state, AgentPersona } from './state';
-import { getPromptForPersona } from './prompts';
+import { state } from './state';
+import { getOrchestratorPrompt } from './prompts';
 import { renderUI } from './ui';
 import { registerWebSearchTool } from './tools/webSearch';
 import { parseTasks } from './tasks';
@@ -45,25 +45,21 @@ export default function (pi: any) {
     }
   };
 
-  // Listen for agent start to inject dynamic personas
+  // Listen for agent start to inject dynamic orchestrator behavior
   pi.on("before_agent_start", (event: any, ctx: any) => {
-    // 1. Dynamic Orchestrator Logic
-    const currentTasks = parseTasks();
-    const hasUncompletedTasks = currentTasks.some((t: any) => !t.isDone);
-    const activePersona = hasUncompletedTasks ? AgentPersona.DEVELOPER : AgentPersona.PLANNER;
-    
-    let personaPrompt = getPromptForPersona(activePersona);
+    // 1. Unified Orchestrator Prompt
+    let orchestratorPrompt = getOrchestratorPrompt();
     
     // 2. New Session Detection & Project Survey Logic
     const isNewSession = !ctx.usage || ctx.usage.totalTokens === 0;
     
-    if (isNewSession && activePersona === AgentPersona.PLANNER) {
+    if (isNewSession) {
       // Efficiently check for project content
       const files = fs.readdirSync(process.cwd());
       const hasContent = files.some(f => !['.git', 'node_modules', '.pi', 'package-lock.json'].includes(f));
 
       if (hasContent) {
-        personaPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. Since the project is not empty, you MUST ask the user if they want you to perform a full project survey to enter into context.
+        orchestratorPrompt += `\n\n[NEW SESSION DETECTED]: This is a fresh session. Since the project is not empty, you MUST ask the user if they want you to perform a full project survey to enter into context.
         - If they say YES: Trigger a full analysis using your "skills/documentation-practices/index.md" skills. Update the 'doc/' folder as needed.
         - If they say NO: Ignore the survey and proceed directly.
         Do not perform analysis until the user gives explicit consent in this session.`;
@@ -73,16 +69,14 @@ export default function (pi: any) {
     // 3. UI Synchronization
     updateUI(ctx);
     
-    // 4. System Prompt Injection (Force hard context switch)
+    // 4. System Prompt Injection
     const fullSystemPrompt = `${event.systemPrompt}
 
 ========================================================================
-🔴 CRITICAL DIRECTIVE: ORCHESTRATOR ACTIVE 🔴
-You are the dynamic Pi Orchestrator. Adopting persona for this turn:
+🔴 CRITICAL DIRECTIVE: MASTER ORCHESTRATOR ACTIVE 🔴
 
-${personaPrompt}
+${orchestratorPrompt}
 
-IGNORE any previous roles. You are STRICTLY the ${activePersona}.
 ========================================================================`;
 
     return { systemPrompt: fullSystemPrompt };

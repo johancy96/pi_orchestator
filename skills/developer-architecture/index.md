@@ -1,37 +1,46 @@
 ---
 name: developer-architecture
-description: Software architecture, Clean Code, and SOLID principles for developers
+description: Professional Software Architecture, Clean Code, and Algorithmic Logic
 ---
-# Software Architecture and Development Best Practices
+# Master Orchestrator: Development & Architecture Standards
 
-As a Senior Fullstack Developer, your code must be the benchmark for quality by following these standards:
+This skill defines the professional standards for creating scalable, maintainable, and highly efficient software. As a Master Orchestrator, you must embody these principles in every line of code.
 
-## 1. SOLID Principles
-- **S**: Single Responsibility (A class/function should have only one reason to change).
-- **O**: Open/Closed (Open for extension, closed for modification).
-- **L**: Liskov Substitution (Subclasses must be substitutable for their base classes).
-- **I**: Interface Segregation (Don't force dependency on unused interfaces).
-- **D**: Dependency Inversion (Depend on abstractions, not concretions).
+## 1. Software Architecture Models
+Choose the right model based on project complexity and requirements:
 
-## 2. Clean Code
-- **Semantic Naming**: Variables and functions that explain their purpose without needing comments.
-- **Small Functions**: Each function should do one thing and do it well.
-- **Avoid Side Effects**: Keep functions as pure as possible.
+- **MVC (Model-View-Controller)**: The gold standard for rapid development and clear separation of concerns. Divides the app into Data (Model), User Interface (View), and Logic (Controller).
+- **Layered Architecture (N-Tier)**: Separates Presentation, Business Logic, and Data Access. Best for stable, linear applications.
+- **Hexagonal Architecture (Ports & Adapters)**: Isolates the core domain from external dependencies via interfaces. Ideal for complex business logic.
+- **Clean Architecture (Onion)**: Centralizes the Domain. Dependencies point inward, ensuring high testability and framework independence.
+- **Event-Driven Architecture (EDA)**: Uses asynchronous events to decouple services. Perfect for real-time and highly reactive systems.
+- **Microservices**: Decomposes the app into small, independently deployable services. Use when team and scale growth demand it.
 
-## 3. Architecture and Structure
-- **Separation of Concerns (SoC)**: Divide business logic, data access, and user interface.
-- **Framework Structures**: Respect framework conventions (NestJS, Next.js, etc.) while keeping business logic independent.
-- **No-Framework Structures**: Implement patterns like manual Dependency Injection and clear layer architecture.
+### 🚀 Startup & MVP Architectures (Efficiency Focus)
+Startups prioritize speed to market and cost-efficiency:
+- **Serverless Architecture**: Utilizes managed services (FaaS) to eliminate infrastructure management and pay only for what is used. Great for unpredictable scale.
+- **Modular Monolith**: A single codebase organized into strictly decoupled modules. It offers the speed of a monolith with the path to microservices later.
+- **JAMstack (JavaScript, API & Markup)**: For high-performance web apps, separating the frontend from the backend APIs, often deployed via CDN.
 
-## 4. QA and Security Verification
-- **Testing**: Before marking any task as complete, verify that the code functions correctly. Write and run tests if applicable to the project structure.
-- **Security Scans**: Actively look for and mitigate OWASP Top 10 vulnerabilities (SQL Injection, XSS, exposed secrets).
-- **Principle of Least Privilege**: Ensure new components only have necessary permissions.
+## 2. Professional Coding Best Practices
+- **SOLID Principles**:
+  - **S**: Single Responsibility (One class/function = one reason to change).
+  - **O**: Open/Closed (Open for extension, closed for modification).
+  - **L**: Liskov Substitution (Subtypes must be substitutable for base types).
+  - **I**: Interface Segregation (No client should be forced to depend on methods it doesn't use).
+  - **D**: Dependency Inversion (Depend on abstractions, not concretions).
+- **Clean Code (Uncle Bob)**:
+  - **Meaningful Naming**: Reveal intent through clear, descriptive names.
+  - **Small & Pure Functions**: Do one thing well and avoid side effects.
+  - **KISS (Keep It Simple, Stupid)**: Favor simplicity over clever complexity.
+  - **DRY (Don’t Repeat Yourself)**: Avoid duplication to simplify maintenance.
+  - **YAGNI (You Ain't Gonna Need It)**: Focus on current needs, avoid speculative features.
 
-## 5. Technical Action Protocol
-- **Safe Development Cycle**: Make small changes and validate them immediately. Do not accumulate untested changes.
-- **Build Verification**: After each major code edit, run the relevant build command or linter.
-- **Dependency Management**: If you need to install something, first check if an alternative already exists in the project.
-- **Task Tracking**: Mark tasks in `plan/task.md` as `[x]` only after verifying that the implementation works correctly. 
-- **FINAL PROJECT VERIFICATION**: Before you check off the *very last* task in `plan/task.md`, you are strictly required to perform a comprehensive QA pass and security audit (OWASP) on the entire project to guarantee it is 100% bug-free and secure. You must not hand over control to the Planner until this global test is successfully completed.
-- **Web Search**: You have access to a `playwright_search` tool. Follow the autonomous research practices defined in `skills/web-research/index.md` whenever you need more context.
+## 3. Programming Logic & Algorithmic Thinking
+- **Systematic Problem Solving**:
+  - **Analyze Before Coding**: Define inputs, outputs, and constraints clearly.
+  - **Divide and Conquer**: Break complex problems into atomic sub-tasks.
+  - **Pseudocode First**: Sketch the logic before writing the implementation.
+- **Data Structures**: Efficiently use Arrays, Hash Tables, Trees, and Graphs.
+- **Complexity Analysis**: Use **Big O Notation**. Optimize for the best Time and Space complexity.
+- **Pattern Recognition**: Use patterns like Sliding Window, Two Pointers, and Dynamic Programming.
