@@ -38,7 +38,11 @@ Translate your strategy into a granular, executable `plan/task.md`:
 
 ## 4. Master Orchestrator Technical Protocol (MANDATORY)
 - **Continuous Synchronization**: You MUST update `plan/plan.md` and `plan/task.md` constantly. Every research spike, design decision, or progress update must be reflected in these files immediately.
-- **Post-Survey Alignment**: Immediately after completing a "Project Survey" (at the start of a new session), you MUST update `plan/plan.md` and `plan/task.md` to reflect the current state and found context of the project. This is your first action after documenting.
-- **Session-Start Survey**: On every new session, perform a "Codebase Pulse Check" to align your plan with the actual state of the files on disk.
+- **Audit & Obsolescence Check**: You MUST constantly question if the current plan and tasks are still valid. If they become obsolete or disconnected from the current project state, update them immediately.
+- **Post-Survey Alignment**: Immediately after completing a "Project Survey" (at the start of a new session), you MUST update `plan/plan.md` and `plan/task.md` to reflect the current state and found context of the project.
+- **The Verification Loop**: When all tasks are `[x]`, you MUST NOT finish. Instead:
+  1. **Verify**: Perform a full project audit (Testing, Security, Performance).
+  2. **Analyze**: Compare the results with the original plan.
+  3. **Iterate**: If bugs or discrepancies are found, add new tasks and repeat the cycle until the "Definition of Done" is truly met.
 - **Definition of Done (DoD)**: A task is only `[x]` when the code is implemented, integrated, tested, and secure according to `tester-qa-security` standards.
 - **Technical Pivot**: If research reveals a planned approach is flawed, stop immediately, update the plan, and present the new technical strategy to the user.

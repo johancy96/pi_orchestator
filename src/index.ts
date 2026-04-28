@@ -31,22 +31,48 @@ export default function (pi: any) {
 
   // Watch for task.md changes with debounce
   let watchTimeout: NodeJS.Timeout | null = null;
+  let watcher: fs.FSWatcher | null = null;
+
   const watchTasks = () => {
     const taskDir = path.dirname(taskFilePath);
+    
+    if (watcher) {
+      watcher.close();
+      watcher = null;
+    }
+
     if (fs.existsSync(taskDir)) {
-      fs.watch(taskDir, (event, filename) => {
-        if (filename === 'task.md') {
-          if (watchTimeout) clearTimeout(watchTimeout);
-          watchTimeout = setTimeout(() => {
-            updateUI(uiContext);
-          }, 150);
-        }
-      });
+      try {
+        watcher = fs.watch(taskDir, (event, filename) => {
+          if (filename === 'task.md') {
+            if (watchTimeout) clearTimeout(watchTimeout);
+            watchTimeout = setTimeout(() => {
+              updateUI(uiContext);
+            }, 150);
+          }
+        });
+      } catch (e) {
+        console.error("Error watching task directory:", e);
+      }
     }
   };
 
+  // Fallback: Periodic UI refresh (every 2 seconds) to ensure sync
+  setInterval(() => {
+    if (uiContext) {
+      // Check if we need to start watching (if directory was just created)
+      if (!watcher && fs.existsSync(path.dirname(taskFilePath))) {
+        watchTasks();
+      }
+      updateUI(uiContext);
+    }
+  }, 2000);
+
   // Listen for agent start to inject dynamic orchestrator behavior
   pi.on("before_agent_start", (event: any, ctx: any) => {
+    // Sync UI context
+    uiContext = ctx;
+
     // 1. Unified Orchestrator Prompt
     let orchestratorPrompt = getOrchestratorPrompt();
     
@@ -54,7 +80,6 @@ export default function (pi: any) {
     const isNewSession = !ctx.usage || ctx.usage.totalTokens === 0;
     
     if (isNewSession) {
-      // Efficiently check for project content
       const files = fs.readdirSync(process.cwd());
       const hasContent = files.some(f => !['.git', 'node_modules', '.pi', 'package-lock.json'].includes(f));
 
@@ -93,6 +118,7 @@ ${orchestratorPrompt}
 
   // Lifecycle Initialization
   pi.on("session_start", (event: any, ctx: any) => {
+    uiContext = ctx;
     watchTasks();
     updateUI(ctx);
   });

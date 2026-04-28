@@ -24,3 +24,5 @@ doc/
 
 # Pi temporary files
 .pi/
+
+.gitignore
